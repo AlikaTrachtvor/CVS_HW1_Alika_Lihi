@@ -14,8 +14,9 @@ results = YOLO(MODEL).train(
     epochs=EPOCHS,
     imgsz=IMG_SIZE,
     patience=PATIENCE,
-    project="runs_round0",
-    name="initial_supervised",
+    project="experiments",
+    name="initial_run",
+    exist_ok=False,
 
     # ---- Augmentation policy, tied directly to EDA findings ----
 
@@ -63,6 +64,3 @@ results = YOLO(MODEL).train(
 )
 
 print("\nTraining complete.")
-print("Best weights saved at: runs_round0/initial_supervised/weights/best.pt")
-print("Loss/mAP curves (results.png) and confusion matrix are in the same folder --"
-      " use these directly for the report's 'Train + valid loss/mAP graphs' section.")
