@@ -1,0 +1,11 @@
+# Data config for the initial supervised model (Round 0)
+# Update 'path' if you didn't use the default OUT_ROOT from split_data.py
+
+path: ./data_resplit
+train: images/train
+val: images/val
+
+names:
+  0: Empty
+  1: Tweezers
+  2: Needle_driver
