@@ -143,7 +143,8 @@ def main_labeled():
     ax.bar(x + width/2, val_vals, width, label="val")
     ax.set_xticks(x)
     ax.set_xticklabels([CLASS_NAMES.get(c, str(c)) for c in all_classes])
-    ax.set_ylabel("Instance count")
+    ax.set_xlabel("Object Class")
+    ax.set_ylabel("Instance Count")
     ax.set_title("Class distribution (instances) by split")
     ax.legend()
     fig.tight_layout()
@@ -163,9 +164,19 @@ def main_labeled():
         axes[0].hist(widths, bins=20, alpha=0.5, label=label)
         axes[1].hist(heights, bins=20, alpha=0.5, label=label)
         axes[2].hist(areas, bins=20, alpha=0.5, label=label)
+
     axes[0].set_title("BBox width (normalized)")
+    axes[0].set_xlabel("Normalized Width")
+    axes[0].set_ylabel("Frequency")
+
     axes[1].set_title("BBox height (normalized)")
+    axes[1].set_xlabel("Normalized Height")
+    axes[1].set_ylabel("Frequency")
+
     axes[2].set_title("BBox area (normalized)")
+    axes[2].set_xlabel("Normalized Area")
+    axes[2].set_ylabel("Frequency")
+
     for a in axes:
         a.legend()
     fig.tight_layout()
@@ -180,6 +191,8 @@ def main_labeled():
         if aspects:
             ax.hist(aspects, bins=20, alpha=0.5, label=CLASS_NAMES.get(cls, str(cls)))
     ax.set_title("BBox aspect ratio (w/h) by class")
+    ax.set_xlabel("Aspect Ratio (Width / Height)")
+    ax.set_ylabel("Frequency")
     ax.legend()
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "bbox_aspect_ratio.png"), dpi=150)
@@ -193,9 +206,11 @@ def main_labeled():
         dims = box_dims[cls]
         xs = [d["xc"] for d in dims]
         ys = [d["yc"] for d in dims]
-        ax.hist2d(xs, ys, bins=20, range=[[0, 1], [0, 1]])
+        h2d = ax.hist2d(xs, ys, bins=20, range=[[0, 1], [0, 1]])
         ax.invert_yaxis()
         ax.set_title(f"Center heatmap: {CLASS_NAMES.get(cls, str(cls))}")
+        ax.set_xlabel("Normalized Center X")
+        ax.set_ylabel("Normalized Center Y")
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "bbox_center_heatmap.png"), dpi=150)
     plt.close(fig)
@@ -344,7 +359,8 @@ def video_main():
         brightness = [cv2.cvtColor(f, cv2.COLOR_RGB2GRAY).mean() for f in frames]
         ax.hist(brightness, bins=20, alpha=0.5, label=name, density=True)
     ax.set_title("Frame brightness distribution per video")
-    ax.set_xlabel("Mean grayscale intensity")
+    ax.set_xlabel("Mean Grayscale Intensity (0-255)")
+    ax.set_ylabel("Probability Density")
     ax.legend()
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "brightness_hist.png"), dpi=150)
@@ -352,12 +368,14 @@ def video_main():
 
     # ---------------- RGB channel histograms ----------------
     fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-    channel_names = ["R", "G", "B"]
+    channel_names = ["Red", "Green", "Blue"]
     for ch in range(3):
         for name, frames in all_frames_for_stats.items():
             vals = np.concatenate([f[:, :, ch].ravel() for f in frames])
             axes[ch].hist(vals, bins=30, alpha=0.4, label=name, density=True)
         axes[ch].set_title(f"{channel_names[ch]} channel")
+        axes[ch].set_xlabel("Pixel Intensity (0-255)")
+        axes[ch].set_ylabel("Probability Density")
         axes[ch].legend()
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "color_hist.png"), dpi=150)
@@ -372,6 +390,8 @@ def video_main():
             sats.append(hsv[:, :, 1].mean())
         ax.hist(sats, bins=20, alpha=0.5, label=name, density=True)
     ax.set_title("Mean saturation per frame, by video")
+    ax.set_xlabel("Mean Saturation Value (0-255)")
+    ax.set_ylabel("Probability Density")
     ax.legend()
     fig.tight_layout()
     fig.savefig(os.path.join(OUT_DIR, "saturation_hist.png"), dpi=150)
