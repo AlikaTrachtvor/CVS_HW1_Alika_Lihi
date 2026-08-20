@@ -2,7 +2,7 @@ import os
 import argparse
 import cv2
 from ultralytics import YOLO
-from predict import predict_frame
+from predict import predict_image
 
 
 def generate_pseudo(model_path, video_path, out_dir, frame_stride=15, conf_threshold=0.6):
@@ -28,7 +28,7 @@ def generate_pseudo(model_path, video_path, out_dir, frame_stride=15, conf_thres
 
         if frame_idx % frame_stride == 0:
             total_frames += 1
-            _, detections = predict_frame(model, frame, conf=conf_threshold)
+            _, detections = predict_image(model, frame, conf=conf_threshold)
 
             if len(detections) > 0:
                 lines = [f"{cls} {xc:.6f} {yc:.6f} {bw:.6f} {bh:.6f}" for cls, xc, yc, bw, bh, _ in detections]
